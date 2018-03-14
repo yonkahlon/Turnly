@@ -100,6 +100,14 @@ function getUserMediaSuccess(stream) {
   localVideo.srcObject = stream;
 }
 
+function startCall() {
+  serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+}
+
+function stopCall() {
+  serverConnection.send(JSON.stringify({'turnly': 'stopCall', 'uuid': uuid}));
+}
+
 function start(isCaller) {
   peerConnection = new RTCPeerConnection(peerConnectionConfig);
   peerConnection.onicecandidate = gotIceCandidate;
@@ -129,6 +137,12 @@ function gotMessageFromServer(message) {
   } else if(signal.ice) {
     console.log("Adding ICE candidate");
     peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
+  } else if(signal.turnly == 'startCall') {
+	console.log("received start call message");
+	// TODO: ring
+  } else if(signal.turnly == 'stopCall') {
+	console.log("received stop call message")
+	// TODO: stop ringing
   }
 }
 
