@@ -74,6 +74,10 @@ var peerConnectionConfig = {
   ]
 };
 
+var sound = new Howl({
+  src: ['button-1.mp3']
+});
+
 function pageReady() {
   uuid = createUUID();
 
@@ -139,7 +143,7 @@ function gotMessageFromServer(message) {
     peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
   } else if(signal.turnly == 'startCall') {
 	console.log("received start call message");
-	// TODO: ring
+	sound.play();
   } else if(signal.turnly == 'stopCall') {
 	console.log("received stop call message")
 	// TODO: stop ringing
