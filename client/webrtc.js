@@ -79,7 +79,6 @@ var peerConnectionConfig = {
 
 var sound = new Howl({
   src: ['ring.mp3'],
-  autoplay: true,
   loop: true,
   volume: 0.5,
 });
@@ -116,19 +115,29 @@ function getUserMediaSuccess(stream) {
 }
 
 function startRing() {
-serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+  if(ringButton.value == "Call")
+  {
+    serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+    ringButton.value = "Stop";
+  } else {
+    serverConnection.send(JSON.stringify({'turnly': 'stopCall', 'uuid': uuid}));
+    ringButton.value = "Call";
+  }
 }
 
 
 function startCall() {
-start(true);	  
-startButton.style.display = 'none';
-        
-//serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+  start(true);	  
+  startButton.style.display = 'none';
 }
 
 function stopCall() {
   serverConnection.send(JSON.stringify({'turnly': 'stopCall', 'uuid': uuid}));
+  sound.stop();
+  ringButton.value = "Call";
+  ringButton.style.display = 'block';
+  startButton.style.display = 'none';
+  stopButton.style.display = 'none';
 }
 
 function start(isCaller) {
@@ -163,15 +172,16 @@ function gotMessageFromServer(message) {
   } else if(signal.turnly == 'startCall') {
 	console.log("received start call message");
 	sound.play();
-        ringButton.style.display = 'none'
-        startButton.style.display = 'block';
-        stopButton.style.display = 'block';
+    ringButton.style.display = 'none';
+    startButton.style.display = 'block';
+    stopButton.style.display = 'block';
   } else if(signal.turnly == 'stopCall') {
-	console.log("received stop call message")
-	// TODO: stop ringing
-        ringButton.style.display = 'block';
-        startButton.style.display = 'none';
-        stopButton.style.display = 'none';
+	console.log("received stop call message");
+	sound.stop();
+    ringButton.value = "Call";
+    ringButton.style.display = 'block';
+    startButton.style.display = 'none';
+    stopButton.style.display = 'none';
   }
 }
 

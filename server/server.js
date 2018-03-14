@@ -24,6 +24,9 @@ const handleRequest = function(request, response) {
   } else if(request.url === '/webrtc.js') {
     response.writeHead(200, {'Content-Type': 'application/javascript'});
     response.end(fs.readFileSync('client/webrtc.js'));
+  } else if(request.url === '/ring.mp3') {
+    response.writeHead(200, {'Content-Type': 'application/javascript'});
+    response.end(fs.readFileSync('client/ring.mp3'));
   }
 };
 
