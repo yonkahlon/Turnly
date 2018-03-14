@@ -4,6 +4,9 @@ var remoteVideo;
 var peerConnection;
 var uuid;
 var serverConnection;
+var startButton;
+var stopButton;
+var ringButton;
 
 var peerConnectionConfig = {
   'iceServers': [
@@ -75,7 +78,10 @@ var peerConnectionConfig = {
 };
 
 var sound = new Howl({
-  src: ['button-1.mp3']
+  src: ['ring.mp3'],
+  autoplay: true,
+  loop: true,
+  volume: 0.5,
 });
 
 function pageReady() {
@@ -83,7 +89,12 @@ function pageReady() {
 
   localVideo = document.getElementById('localVideo');
   remoteVideo = document.getElementById('remoteVideo');
-
+  startButton = document.getElementById('start');
+  stopButton = document.getElementById('stop');
+  ringButton = document.getElementById('ring');
+  startButton.style.display = 'none';
+  stopButton.style.display = 'none';
+  ringButton.style.display = 'block';
   serverConnection = new WebSocket('wss://' + window.location.hostname + ':443');
   serverConnection.onmessage = gotMessageFromServer;
 
@@ -104,8 +115,16 @@ function getUserMediaSuccess(stream) {
   localVideo.srcObject = stream;
 }
 
+function startRing() {
+serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+}
+
+
 function startCall() {
-  serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+start(true);	  
+startButton.style.display = 'none';
+        
+//serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
 }
 
 function stopCall() {
@@ -144,9 +163,15 @@ function gotMessageFromServer(message) {
   } else if(signal.turnly == 'startCall') {
 	console.log("received start call message");
 	sound.play();
+        ringButton.style.display = 'none'
+        startButton.style.display = 'block';
+        stopButton.style.display = 'block';
   } else if(signal.turnly == 'stopCall') {
 	console.log("received stop call message")
 	// TODO: stop ringing
+        ringButton.style.display = 'block';
+        startButton.style.display = 'none';
+        stopButton.style.display = 'none';
   }
 }
 

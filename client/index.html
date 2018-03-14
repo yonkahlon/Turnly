@@ -3,7 +3,7 @@
   <head>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.9/howler.js"></script>
-	<script src="webrtc.js"></script>
+    <script src="webrtc.js"></script>
   </head>
 
   <body>
@@ -12,8 +12,9 @@
 
     <br />
 
-    <input type="button" id="start" onclick="startCall()" value="Start Call"></input>
-	<input type="button" id="stop" onclick="stopCall()" value="Stop Call"></input>
+    <input type="button" id="ring" onclick="startRing()" value="Call"></input>
+    <input type="button" id="start" onclick="startCall()" value="Accept"></input>
+    <input type="button" id="stop" onclick="stopCall()" value="Decline"></input>
 
     <script type="text/javascript">
         pageReady();
