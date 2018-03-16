@@ -13,6 +13,8 @@ var stopButton;
 var ringButton;
 var cams;
 var camIds;
+var localVideoRow;
+var remoteVideoRow;
 
 var peerConnectionConfig =
 {
@@ -92,6 +94,9 @@ function pageReady()
     startButton = document.getElementById('start');
     stopButton = document.getElementById('stop');
     ringButton = document.getElementById('ring');
+    localVideoRow = document.getElementById('localVideoRow');
+    remoteVideoRow = document.getElementById('remoteVideoRow');
+    
     startButton.style.display = 'none';
     stopButton.style.display = 'none';
     ringButton.style.display = 'block';
@@ -177,6 +182,7 @@ function startRing()
 function startCall() 
 {
   start(true);	  
+  sound.stop();
   startButton.style.display = 'none';
 }
 
@@ -273,16 +279,19 @@ function gotRemoteStream(event)
     }
 }
 
-function errorHandler(error) {
-  console.log(error);
+function errorHandler(error)
+{
+    console.log(error);
 }
 
 // Taken from http://stackoverflow.com/a/105074/515584
 // Strictly speaking, it's not a real UUID, but it gets the job done here
-function createUUID() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  }
+function createUUID()
+{
+    function s4()
+    {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
 
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }

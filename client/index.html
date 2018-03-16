@@ -10,16 +10,42 @@
   </head>
 
   <body>
-    <video id="localVideo" autoplay muted style="width:40%;" playsinline></video>
-    <video id="localVideo2" autoplay muted style="width:40%;" playsinline></video>
-    <video id="remoteVideo" autoplay style="width:40%;" playsinline></video>
-    <video id="remoteVideo2" autoplay muted style="width:40%;" playsinline></video>
-    <br />
-
-    <input type="button" id="ring" onclick="startRing()" value="Call"></input>
-    <input type="button" id="start" onclick="startCall()" value="Accept"></input>
-    <input type="button" id="stop" onclick="stopCall()" value="Decline"></input>
-
+    <div class="container">
+        <div class="row" id="localVideoRow">
+            <div class="col-6 collapse" id='colLocalVideo1'>
+                <video id="localVideo" autoplay muted style="width:100%;" playsinline></video>
+            </div>
+            <div class="col-6 collapse" id='colLocalVideo2'>
+                <video id="localVideo2" autoplay muted style="width:100%;" playsinline></video>
+            </div>
+        </div>
+        <div class="row" id="remoteVideoRow">
+            <div class="col-6 collapse" id='colRemoteVideo1'>
+                <video id="remoteVideo" autoplay style="width:100%;" playsinline></video>
+            </div>
+            <div class="col-6 collapse" id='colRemoteVideo2'>
+                <video id="remoteVideo2" autoplay muted style="width:100%;" playsinline></video>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-3">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colLocalVideo1"> </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colLocalVideo2"> </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colRemoteVideo1"> </button>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colRemoteVideo2"> </button>
+            </div>
+            <div class="col-3">
+                <input type="button" class="btn btn-success" id="ring" onclick="startRing()" value="Call"></input>
+            </div>
+            <div class="col-3">
+                <input type="button" class="btn btn-success" id="start" onclick="startCall()" value="Accept"></input>
+            </div>    
+            <div class="col-3">    
+                <input type="button" class="btn btn-danger" id="stop" onclick="stopCall()" value="Decline"></input>
+            </div>    
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"/>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.9/howler.js"></script>
@@ -28,6 +54,5 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
   </body>
 </html>
