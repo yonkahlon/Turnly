@@ -1,6 +1,10 @@
+var hasTwoCameras;
 var localVideo;
+var localVideo2;
 var localStream;
+var localStream2;
 var remoteVideo;
+var remoteVideo2;
 var peerConnection;
 var uuid;
 var serverConnection;
@@ -83,11 +87,33 @@ var sound = new Howl({
   volume: 0.5,
 });
 
+var cams;
+var camIds;
+
+function getCameraIDs()
+{
+  navigator.mediaDevices.enumerateDevices().then(function(devices)
+  {
+    cams =  _.filter(devices, function(e){ //only return video elements
+      return e.kind === 'videoinput'; });
+    camIds = _.map(cams, function (e) { // return only ids
+      return e.deviceId;
+    });
+  hasTwoCameras = false;
+  if (camIds.length > 1)
+  { hasTwoCameras = true };
+
+  });
+ }
+
 function pageReady() {
   uuid = createUUID();
 
+  getCameraIDs();
   localVideo = document.getElementById('localVideo');
+  localVideo2 = document.getElementById('localVideo2');
   remoteVideo = document.getElementById('remoteVideo');
+  remoteVideo2 = document.getElementById('remoteVideo2');
   startButton = document.getElementById('start');
   stopButton = document.getElementById('stop');
   ringButton = document.getElementById('ring');
@@ -98,20 +124,49 @@ function pageReady() {
   serverConnection.onmessage = gotMessageFromServer;
 
   var constraints = {
+    /*video: {
+      deviceId: camIds[0]
+	},*/
     video: true,
     audio: true,
   };
+
 
   if(navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia(constraints).then(getUserMediaSuccess).catch(errorHandler);
   } else {
     alert('Your browser does not support getUserMedia API');
   }
+
 }
 
 function getUserMediaSuccess(stream) {
   localStream = stream;
   localVideo.srcObject = stream;
+
+  addCamera();
+}
+
+function addCamera(){
+
+  var constraints = {
+    video: {
+      deviceId: { exact: camIds[1] }},
+      audio: false,
+  };
+ 
+  if(hasTwoCameras){
+  if(navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia(constraints).then(getUserMediaSuccess2).catch(errorHandler);
+  } else {
+	alert('GetUserMedia2 failed');
+ }
+ }
+}
+
+function getUserMediaSuccess2(stream) {
+	localStream2 = stream;
+	localVideo2.srcObject = stream;
 }
 
 function startRing() {
@@ -145,7 +200,9 @@ function start(isCaller) {
   peerConnection.onicecandidate = gotIceCandidate;
   peerConnection.ontrack = gotRemoteStream;
   peerConnection.addStream(localStream);
-
+  if(hasTwoCameras){
+  	peerConnection.addTrack(localStream2, localStream);
+  }
   if(isCaller) {
     peerConnection.createOffer().then(createdDescription).catch(errorHandler);
   }
@@ -200,9 +257,22 @@ function createdDescription(description) {
   }).catch(errorHandler);
 }
 
+var videoStreamCount = 0;
+
 function gotRemoteStream(event) {
   console.log('got remote stream');
-  remoteVideo.srcObject = event.streams[0];
+  if(videoStreamCount === 0)
+    {
+     console.log('remote stream 1');
+     remoteVideo.srcObject = event.streams[0];
+     videoStreamCount += 1;
+    }
+  else if (videoStreamCount === 1)
+    {
+     console.log('remote stream 2');
+     remoteVideo2.srcObject = event.streams[0];
+     videoStreamCount += 1;
+    }
 }
 
 function errorHandler(error) {
