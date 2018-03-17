@@ -251,6 +251,7 @@ function startRing()
 
 function acceptCall() 
 {
+  sound.stop();
   peerConnection.createOffer().then(createdDescription).catch(errorHandler);
   startButton.hidden = true;
   ringButton.hidden = true;
