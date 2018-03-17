@@ -7,42 +7,47 @@
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
   </head>
 
   <body>
-    <div class="container">
+      <div class="container">
         <div class="row" id="localVideoRow">
-            <div class="col-6 collapse" id='colLocalVideo1'>
-                <video id="localVideo" autoplay muted style="width:100%;" playsinline></video>
+            <div class="col-6" id='colLocalVideo1'>
+                <video class="rounded border-dark" id="localVideo" autoplay muted style="width:100%;" playsinline></video>
             </div>
-            <div class="col-6 collapse" id='colLocalVideo2'>
-                <video id="localVideo2" autoplay muted style="width:100%;" playsinline></video>
+            <div class="col-6" id='colLocalVideo2'>
+                <video class="rounded border-dark" id="localVideo2" autoplay muted style="width:100%;" playsinline></video>
             </div>
         </div>
         <div class="row" id="remoteVideoRow">
-            <div class="col-6 collapse" id='colRemoteVideo1'>
-                <video id="remoteVideo" autoplay style="width:100%;" playsinline></video>
+            <div class="col-6" id='colRemoteVideo1'>
+                <video class="rounded border-dark"  hidden='true' id="remoteVideo" autoplay style="width:100%;" playsinline></video>
             </div>
-            <div class="col-6 collapse" id='colRemoteVideo2'>
-                <video id="remoteVideo2" autoplay muted style="width:100%;" playsinline></video>
+            <div class="col-6" id='colRemoteVideo2'>
+                <video class="rounded border-dark"  hidden='true' id="remoteVideo2" autoplay muted style="width:100%;" playsinline></video>
             </div>
         </div>
         <br />
         <div class="row">
+        
             <div class="col-3">
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colLocalVideo1"> </button>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colLocalVideo2"> </button>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colRemoteVideo1"> </button>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#colRemoteVideo2"> </button>
+			<span>
+                <button type="button" class="btn btn-success btn-lg" id="ring" onclick="startRing()" >
+				    <span class="glyphicon glyphicon-facetime-video"></span>
+				</button>
+				</span>				 
             </div>
             <div class="col-3">
-                <input type="button" class="btn btn-success" id="ring" onclick="startRing()" value="Call"></input>
-            </div>
-            <div class="col-3">
-                <input type="button" class="btn btn-success" id="start" onclick="startCall()" value="Accept"></input>
+                <button type="button" class="btn btn-success btn-lg" id="start"  hidden='true' onclick="acceptCall()">
+					<span class="glyphicon glyphicon-earphone"></span>
+				</button>
             </div>    
             <div class="col-3">    
-                <input type="button" class="btn btn-danger" id="stop" onclick="stopCall()" value="Decline"></input>
+                <button type="button" class="btn btn-danger btn-lg" id="stop"  hidden='true' onclick="stopCall()">
+					<span class="glyphicon glyphicon-phone-alt"></span>
+				</button>
             </div>    
         </div>
     </div>

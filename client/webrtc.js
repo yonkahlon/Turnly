@@ -13,8 +13,6 @@ var stopButton;
 var ringButton;
 var cams;
 var camIds;
-var localVideoRow;
-var remoteVideoRow;
 
 var peerConnectionConfig =
 {
@@ -63,53 +61,38 @@ var sound = new Howl(
 {
     src: ['ring.mp3'],
     loop: true,
-    volume: 0.5,
+    volume: 1.0,
 });
 
-function getCameraIDs()
-{
-  navigator.mediaDevices.enumerateDevices().then(function(devices)
-  {
-    cams =  _.filter(devices, function(e){ //only return video elements
-      return e.kind === 'videoinput'; });
-    camIds = _.map(cams, function (e) { // return only ids
-      return e.deviceId;
-    });
-  hasTwoCameras = false;
-  if (camIds.length > 1)
-  { hasTwoCameras = true };
-
-  });
- }
 
 function pageReady()
 {
     uuid = createUUID();
     
     getCameraIDs();
+	
     localVideo = document.getElementById('localVideo');
     localVideo2 = document.getElementById('localVideo2');
     remoteVideo = document.getElementById('remoteVideo');
     remoteVideo2 = document.getElementById('remoteVideo2');
-    startButton = document.getElementById('start');
+	startButton = document.getElementById('start');
     stopButton = document.getElementById('stop');
     ringButton = document.getElementById('ring');
-    localVideoRow = document.getElementById('localVideoRow');
-    remoteVideoRow = document.getElementById('remoteVideoRow');
     
-    startButton.style.display = 'none';
-    stopButton.style.display = 'none';
-    ringButton.style.display = 'block';
     serverConnection = new WebSocket('wss://' + window.location.hostname + ':443');
     serverConnection.onmessage = gotMessageFromServer;
     
+	initCamerasAndPeerConnection();
+}
+
+function initCamerasAndPeerConnection()
+{	
     var constraints = 
     {
         video: true,
         audio: true,
     };
-    
-    
+	
     if(navigator.mediaDevices.getUserMedia) 
     {
         navigator.mediaDevices.getUserMedia(constraints).then(getUserMediaSuccess).catch(errorHandler);
@@ -118,14 +101,15 @@ function pageReady()
     {
         alert('Your browser does not support getUserMedia API');
     }
-
 }
 
+//**********************************  CAMERA SETUP **************************************/
 function getUserMediaSuccess(stream)
 {
     localStream = stream;
     localVideo.srcObject = stream;
     
+	
     peerConnection = new RTCPeerConnection(peerConnectionConfig);
     peerConnection.onicecandidate = gotIceCandidate;
     peerConnection.onaddstream = gotRemoteStream;
@@ -164,51 +148,12 @@ function getUserMediaSuccess2(stream)
     peerConnection.addTrack(stream.getVideoTracks()[0], peerConnection.getLocalStreams()[0]);
 }
 
-function startRing()
-{
-    if(ringButton.value == "Call")
-    {
-        serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
-        ringButton.value = "Stop";
-    } 
-    else
-    {
-        serverConnection.send(JSON.stringify({'turnly': 'stopCall', 'uuid': uuid}));
-        ringButton.value = "Call";
-    }
-}
 
-
-function startCall() 
-{
-  start(true);	  
-  sound.stop();
-  startButton.style.display = 'none';
-}
-
-function stopCall()
-{
-    serverConnection.send(JSON.stringify({'turnly': 'stopCall', 'uuid': uuid}));
-    sound.stop();
-    ringButton.value = "Call";
-    ringButton.style.display = 'block';
-    startButton.style.display = 'none';
-    stopButton.style.display = 'none';
-}
-
-function start(isCaller)
-{
-    if(isCaller)
-    {
-        peerConnection.createOffer().then(createdDescription).catch(errorHandler);
-    }
-}
+//**********************************  WEBRCT CORE **************************************/
 
 function gotMessageFromServer(message)
 {
-    if(!peerConnection) start(false);
-    
-    var signal = JSON.parse(message.data);
+	var signal = JSON.parse(message.data);
     
     // Ignore messages from ourself
     if(signal.uuid == uuid) return;
@@ -233,18 +178,21 @@ function gotMessageFromServer(message)
     {
         console.log("received start call message");
         sound.play();
-        ringButton.style.display = 'none';
-        startButton.style.display = 'block';
-        stopButton.style.display = 'block';
+		startButton.hidden = false;
+		ringButton.hidden = true;
+		stopButton.hidden = false;
     }
     else if(signal.turnly == 'stopCall')
     {
         console.log("received stop call message");
         sound.stop();
         ringButton.value = "Call";
-        ringButton.style.display = 'block';
-        startButton.style.display = 'none';
-        stopButton.style.display = 'none';
+        startButton.hidden = true;
+		ringButton.hidden = false;
+		stopButton.hidden = true;
+		showLocalVideo(true);
+		showRemoteVideo(false);
+		resetPeerConnection();
     }
 }
 
@@ -277,6 +225,8 @@ function gotRemoteStream(event)
         remoteVideo2.srcObject = event.stream.clone();
         remoteVideo2.srcObject.removeTrack(remoteVideo2.srcObject.getVideoTracks()[0]);
     }
+	showRemoteVideo(true);
+	showLocalVideo(false);
 }
 
 function errorHandler(error)
@@ -284,8 +234,60 @@ function errorHandler(error)
     console.log(error);
 }
 
-// Taken from http://stackoverflow.com/a/105074/515584
-// Strictly speaking, it's not a real UUID, but it gets the job done here
+function resetPeerConnection()
+{
+	peerConnection.close();
+	initCamerasAndPeerConnection();
+}
+
+//**********************************  BUTTON CALLBACKS **************************************/
+function startRing()
+{
+    serverConnection.send(JSON.stringify({'turnly': 'startCall', 'uuid': uuid}));
+	ringButton.hidden = true;
+	stopButton.hidden = false;
+}
+
+
+function acceptCall() 
+{
+  peerConnection.createOffer().then(createdDescription).catch(errorHandler);
+  startButton.hidden = true;
+  ringButton.hidden = true;
+  stopButton.hidden = false;
+}
+
+function stopCall()
+{
+    serverConnection.send(JSON.stringify({'turnly': 'stopCall', 'uuid': uuid}));
+    sound.stop();
+    ringButton.hidden = false;
+    startButton.hidden = true;
+    stopButton.hidden = true;
+		
+	showLocalVideo(true);
+	showRemoteVideo(false);
+	resetPeerConnection();
+}
+
+//*******************************  UTILITY FUNCTIONS **************************************//
+/* Checks if device has more than 1 camera.  Sets 'hasTwoCameras' */
+function getCameraIDs()
+{
+  navigator.mediaDevices.enumerateDevices().then(function(devices)
+  {
+    cams =  _.filter(devices, function(e){ 
+      return e.kind === 'videoinput'; });
+    camIds = _.map(cams, function (e) { 
+      return e.deviceId;
+    });
+  hasTwoCameras = false;
+  if (camIds.length > 1)
+  { hasTwoCameras = true };
+
+  });
+ }
+
 function createUUID()
 {
     function s4()
@@ -294,4 +296,19 @@ function createUUID()
     }
 
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+//**************************** DISPLAY UTILITY FUNCTIONS **********************************//
+function showLocalVideo(isVisible)
+{
+	console.log("Setting local video visibility:" + isVisible);
+	localVideo.hidden = !isVisible;
+	localVideo2.hidden = !isVisible;
+}
+
+function showRemoteVideo(isVisible)
+{
+	console.log("Setting remote video visibility:" + isVisible);
+	remoteVideo.hidden = !isVisible;
+	remoteVideo2.hidden = !isVisible;
 }
