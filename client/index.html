@@ -3,11 +3,21 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, shrink-to-fit=no">
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+	
+	<style type="text/css" media="screen">
+		#colLocalVideo1{background:#eee;width:400px;height:300px;overflow:hidden;position:relative;margin:2em 0;}
+		#colLocalVideo1 span{font-size:20px;color:#666;display:block;padding:2em;}
+		video{width:400px;height:300px;position:absolute;top:0;left:0;}
+		#controls{position:relative;width:400px;}
+		#change{position:absolute;right:-100px;top:-300px;width:100px;}
+		button{font-size:150%;text-align:center;display:block;}
+		#change button{width:60px;border:none;background:#fff;}
+	</style>
 
   </head>
 
@@ -16,6 +26,7 @@
         <div class="row" id="localVideoRow">
             <div class="col-6" id='colLocalVideo1'>
                 <video class="rounded border-dark" id="localVideo" autoplay muted style="width:100%;" playsinline></video>
+				<div id="controls"/>
             </div>
             <div class="col-6" id='colLocalVideo2'>
                 <video class="rounded border-dark" id="localVideo2" autoplay muted style="width:100%;" playsinline></video>
@@ -26,7 +37,7 @@
                 <video class="rounded border-dark"  hidden='true' id="remoteVideo" autoplay style="width:100%;" playsinline></video>
             </div>
             <div class="col-6" id='colRemoteVideo2'>
-                <video class="rounded border-dark"  hidden='true' id="remoteVideo2" autoplay muted style="width:100%;" playsinline></video>
+				<video class="rounded border-dark"  hidden='true' id="remoteVideo2" autoplay muted style="width:100%;" playsinline></video>
             </div>
         </div>
         <br />
@@ -54,6 +65,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"/>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.9/howler.js"></script>
+	<script src="transformvideo.js"></script>
     <script src="webrtc.js"></script>
     <script type="text/javascript"> pageReady(); </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

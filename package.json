@@ -1,5 +1,5 @@
 {
-  "name": "WebRTC-Example",
+  "name": "webrtc-example",
   "version": "1.0.0",
   "description": "An 'as simple as it gets' WebRTC example.",
   "main": "index.js",
@@ -23,5 +23,6 @@
   "dependencies": {
     "underscore": "^1.8.3",
     "ws": "^3.3.2"
-  }
+  },
+  "devDependencies": {}
 }
