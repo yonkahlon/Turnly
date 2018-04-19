@@ -8,13 +8,19 @@
 (function(){
 
 /* predefine zoom and rotate */
-  var zoom = 1,
-      rotate = 0;
+  var zoom1 = 1,
+      zoom2 = 1,
+      zoom_inc = 0.2,
+      pan_inc = 10;
 
 /* Grab the necessary DOM elements */
-  var stage = document.getElementById('colLocalVideo1'),
-      v = document.getElementById('localVideo'),
-      controls = document.getElementById('controls');
+  var stage1 = document.getElementById('colRemoteVideo1'),
+      stage2 = document.getElementById('colRemoteVideo2'),
+      v1 = document.getElementById('remoteVideo'),
+      v2 = document.getElementById('remoteVideo2'),
+      controls1 = document.getElementById('controls_video1'),
+      controls2 = document.getElementById('controls_video2');
+      
   
 /* Array of possible browser specific settings for transformation */
   var properties = ['transform', 'WebkitTransform', 'MozTransform',
@@ -26,99 +32,85 @@
   
 /* Find out which CSS transform the browser supports */
   for(i=0,j=properties.length;i<j;i++){
-    if(typeof stage.style[properties[i]] !== 'undefined'){
+    if(typeof stage1.style[properties[i]] !== 'undefined'){
       prop = properties[i];
       break;
     }
   }
 
 /* Position video */
-  v.style.left = 0;
-  v.style.top = 0;
-
-/* If there is a controls element, add the player buttons */
-/* TODO: why does Opera not display the rotation buttons? */
-  if(controls){
-    controls.innerHTML =  /*'<button class="play">play</button>'*/+
-                          '<div id="change">' +
-                            '<button class="zoomin">+</button>' +
-                            '<button class="zoomout">-</button>' +
-                            '<button class="left">⇠</button>' +
-                            '<button class="right">⇢</button>' +
-                            '<button class="up">⇡</button>' +
-                            '<button class="down">⇣</button>' +
-                            '<button class="rotateleft">&#x21bb;</button>' +
-                            '<button class="rotateright">&#x21ba;</button>' +
-                            '<button class="reset">reset</button>' +
-                          '</div>';
-  }
+  v1.style.left = 0;
+  v1.style.top = 0;
+  v2.style.left = 0;
+  v2.style.top = 0;
 
 /* If a button was clicked (uses event delegation)...*/
-  controls.addEventListener('click',function(e){
+  controls1.addEventListener('click',function(e){
     t = e.target;
     if(t.nodeName.toLowerCase()==='button'){
-
+        if(t.classList.contains('zoomin'))
+        {
+            zoom1 = zoom1 + zoom_inc;
+            v1.style[prop]='scale('+zoom1+')';
+        }
+        else if(t.classList.contains('zoomout'))
+        {
+            zoom1 = zoom1 - zoom_inc;
+            v1.style[prop]='scale('+zoom1+')';
+        }
+        else if(t.classList.contains('left'))
+        {
+            v1.style.left = (parseInt(v1.style.left,10) - pan_inc) + 'px';
+        }
+        else if(t.classList.contains('right'))
+        {
+            v1.style.left = (parseInt(v1.style.left,10) + pan_inc) + 'px';
+        }
+        else if(t.classList.contains('up'))
+        {
+            v1.style.top = (parseInt(v1.style.top,10) - pan_inc) + 'px';
+        }
+        else if(t.classList.contains('down'))
+        {
+            v1.style.top = (parseInt(v1.style.top,10) + pan_inc) + 'px';
+        }
 /* Check the class name of the button and act accordingly */    
-      switch(t.className){
+      //switch(t.classList){
 
-/* Toggle play functionality and button label */    
-/*        case 'play':
-          if(v.paused){
-            v.play();
-            t.innerHTML = 'pause';
-          } else {
-            v.pause();
-            t.innerHTML = 'play';
-          }
+/* Increase zoom and set the transformation */
+       /* case 'zoomin':
+          zoom1 = zoom1 + 0.1;
+          v1.style[prop]='scale('+zoom1+')';
         break;
 */
-/* Increase zoom and set the transformation */
-        case 'zoomin':
-          zoom = zoom + 0.1;
-          v.style[prop]='scale('+zoom+') rotate('+rotate+'deg)';
-        break;
-
 /* Decrease zoom and set the transformation */
-        case 'zoomout':
-          zoom = zoom - 0.1;
-          v.style[prop]='scale('+zoom+') rotate('+rotate+'deg)';
+   /*     case 'zoomout':
+          
         break;
-
-/* Increase rotation and set the transformation */
-        case 'rotateleft':
-          rotate = rotate + 5;
-          v.style[prop]='rotate('+rotate+'deg) scale('+zoom+')';
-        break;
-/* Decrease rotation and set the transformation */
-        case 'rotateright':
-          rotate = rotate - 5;
-          v.style[prop]='rotate('+rotate+'deg) scale('+zoom+')';
-        break;
-
+*/
 /* Move video around by reading its left/top and altering it */
-        case 'left':
-          v.style.left = (parseInt(v.style.left,10) - 5) + 'px';
+ /*       case 'left':
+          
         break;
         case 'right':
-          v.style.left = (parseInt(v.style.left,10) + 5) + 'px';
+          
         break;
         case 'up':
-          v.style.top = (parseInt(v.style.top,10) - 5) + 'px';
+          
         break;
         case 'down':
-          v.style.top = (parseInt(v.style.top,10) + 5) + 'px';
+          
         break;
-
+*/
 /* Reset all to default */
-        case 'reset':
-          zoom = 1;
-          rotate = 0;
-          v.style.top = 0 + 'px';
-          v.style.left = 0 + 'px';
-          v.style[prop]='rotate('+rotate+'deg) scale('+zoom+')';
+/*        case 'reset':
+          zoom1 = 1;
+          v1.style.top = 0 + 'px';
+          v1.style.left = 0 + 'px';
+          v1.style[prop]='scale('+zoom1+')';
         break;
       }        
-
+*/
       e.preventDefault();
     }
   },false);

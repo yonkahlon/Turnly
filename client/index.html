@@ -10,13 +10,11 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 	
 	<style type="text/css" media="screen">
-		#colLocalVideo1{background:#eee;width:400px;height:300px;overflow:hidden;position:relative;margin:2em 0;}
-		#colLocalVideo1 span{font-size:20px;color:#666;display:block;padding:2em;}
-		video{width:400px;height:300px;position:absolute;top:0;left:0;}
-		#controls{position:relative;width:400px;}
-		#change{position:absolute;right:-100px;top:-300px;width:100px;}
-		button{font-size:150%;text-align:center;display:block;}
-		#change button{width:60px;border:none;background:#fff;}
+        #colLocalVideo1{background:#eee;width:666px;height:500px;overflow:hidden;position:relative;margin:2em 0;}
+        #colLocalVideo2{background:#eee;width:666px;height:500px;overflow:hidden;position:relative;margin:2em 0;}
+        #colRemoteVideo1{background:#eee;width:666px;height:500px;overflow:hidden;position:relative;margin:2em 0;}
+        #colRemoteVideo2{background:#eee;width:666px;height:500px;overflow:hidden;position:relative;margin:2em 0;}
+        video{width:666px;height:500px;position:absolute;top:0;left:0;}
 	</style>
 
   </head>
@@ -26,23 +24,68 @@
         <div class="row" id="localVideoRow">
             <div class="col-6" id='colLocalVideo1'>
                 <video class="rounded border-dark" id="localVideo" autoplay muted style="width:100%;" playsinline></video>
-				<div id="controls"/>
             </div>
             <div class="col-6" id='colLocalVideo2'>
                 <video class="rounded border-dark" id="localVideo2" autoplay muted style="width:100%;" playsinline></video>
             </div>
         </div>
-        <div class="row" id="remoteVideoRow">
+        <div class="row" id="remoteVideoRow" hidden='true'>
             <div class="col-6" id='colRemoteVideo1'>
-                <video class="rounded border-dark"  hidden='true' id="remoteVideo" autoplay style="width:100%;" playsinline></video>
+                <video class="rounded border-dark"  hidden='true' id="remoteVideo" autoplay playsinline></video>
             </div>
+            
             <div class="col-6" id='colRemoteVideo2'>
-				<video class="rounded border-dark"  hidden='true' id="remoteVideo2" autoplay muted style="width:100%;" playsinline></video>
+				<video class="rounded border-dark"  hidden='true' id="remoteVideo2" autoplay muted playsinline></video>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6" id="controls_video1" hidden='true'>
+                <div id="change_video1">
+                    <button type="button" class="zoomin btn btn-lg">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                    <button type="button" class="zoomout btn btn-lg">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                    <button type="button" class="left btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                    </button>
+                    <button type="button" class="right btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-right"></span>
+                    </button>
+                    <button type="button" class="up btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-up"></span>
+                    </button>
+                    <button type="button" class="down btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-6" id="controls_video2" hidden='true'>
+                <div id="change_video2">
+                    <button type="button" class="zoomin btn btn-lg">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                    <button type="button" class="zoomout btn btn-lg">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                    <button type="button" class="left btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                    </button>
+                    <button type="button" class="right btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-right"></span>
+                    </button>
+                    <button type="button" class="up btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-up"></span>
+                    </button>
+                    <button type="button" class="down btn btn-lg">
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                    </button>
+                </div>
             </div>
         </div>
         <br />
         <div class="row">
-        
             <div class="col-3">
 			<span>
                 <button type="button" class="btn btn-success btn-lg" id="ring" onclick="startRing()" >

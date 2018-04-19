@@ -5,6 +5,10 @@ var localStream;
 var localStream2;
 var remoteVideo;
 var remoteVideo2;
+var remoteVideoControls;
+var remoteVideoControls2;
+var localVideoRow;
+var remoteVideoRow;
 var peerConnection;
 var uuid;
 var serverConnection;
@@ -75,9 +79,13 @@ function pageReady()
     localVideo2 = document.getElementById('localVideo2');
     remoteVideo = document.getElementById('remoteVideo');
     remoteVideo2 = document.getElementById('remoteVideo2');
+    remoteVideoControls = document.getElementById('controls_video1');
+    remoteVideoControls2 = document.getElementById('controls_video2');
 	startButton = document.getElementById('start');
     stopButton = document.getElementById('stop');
     ringButton = document.getElementById('ring');
+    localVideoRow = document.getElementById('localVideoRow');
+    remoteVideoRow = document.getElementById('remoteVideoRow');
     
     serverConnection = new WebSocket('wss://' + window.location.hostname + ':443');
     serverConnection.onmessage = gotMessageFromServer;
@@ -219,11 +227,13 @@ function gotRemoteStream(event)
 {
     console.log('got remote stream');
     remoteVideo.srcObject = event.stream;
+    remoteVideoControls.hidden = false;
     if(event.stream.getVideoTracks().length > 1)
     {
         console.log('remote stream 2');
         remoteVideo2.srcObject = event.stream.clone();
         remoteVideo2.srcObject.removeTrack(remoteVideo2.srcObject.getVideoTracks()[0]);
+        remoteVideoControls2.hidden = false;
     }
 	showRemoteVideo(true);
 	showLocalVideo(false);
@@ -305,6 +315,7 @@ function showLocalVideo(isVisible)
 	console.log("Setting local video visibility:" + isVisible);
 	localVideo.hidden = !isVisible;
 	localVideo2.hidden = !isVisible;
+    localVideoRow.hidden = !isVisible;
 }
 
 function showRemoteVideo(isVisible)
@@ -312,4 +323,11 @@ function showRemoteVideo(isVisible)
 	console.log("Setting remote video visibility:" + isVisible);
 	remoteVideo.hidden = !isVisible;
 	remoteVideo2.hidden = !isVisible;
+    remoteVideoRow.hidden = !isVisible;
+    
+    if(!isVisible)
+    {
+        remoteVideoControls.hidden = true;
+        remoteVideoControls2.hidden = true;
+    }
 }
